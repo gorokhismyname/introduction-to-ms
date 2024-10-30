@@ -1,7 +1,6 @@
 package com.example.resource_service.service;
 
-import com.example.resource_service.exception.MultipartFileProcessingException;
-import jakarta.validation.ValidationException;
+import com.example.resource_service.exception.FileProcessingException;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -10,13 +9,11 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class FileProcessorImpl implements FileProcessor {
@@ -26,22 +23,17 @@ public class FileProcessorImpl implements FileProcessor {
     private static final Tika tika = new Tika();
 
     @Override
-    public void validateFile(MultipartFile file) {
-        try {
-            String detectedType = tika.detect(file.getInputStream());
-            if (!ACCEPTED_CONTENT_TYPE.equals(detectedType)) {
-                throw new ValidationException();
-            }
-        } catch (IOException e) {
-            throw new MultipartFileProcessingException();
+    public void validateDatatype(byte[] file) {
+        String detectedType = tika.detect(file);
+        if (!ACCEPTED_CONTENT_TYPE.equals(detectedType)) {
+            throw new FileProcessingException("Invalid data type: " + detectedType);
         }
     }
 
     @Override
-    public Map<String, String> extractMetadata(MultipartFile file) {
-        InputStream inputStream = null;
+    public Metadata extractMetadata(byte[] file) {
         try {
-            inputStream = file.getInputStream();
+            InputStream inputStream = new ByteArrayInputStream(file);
 
             Parser parser = new AutoDetectParser();
             BodyContentHandler handler = new BodyContentHandler();
@@ -51,14 +43,7 @@ public class FileProcessorImpl implements FileProcessor {
 
             parser.parse(inputStream, handler, metadata, context);
 
-            String[] metadataNames = metadata.names();
-            Map<String, String> fileMetadata = new HashMap<>();
-
-            for (String name : metadataNames) {
-                fileMetadata.put(name, metadata.get(name));
-            }
-
-            return fileMetadata;
+            return metadata;
 
         } catch (IOException | TikaException | SAXException e) {
             throw new RuntimeException(e);

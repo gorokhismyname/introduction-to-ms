@@ -3,14 +3,12 @@ package com.example.resource_service.service;
 import com.example.resource_service.exception.AudioResourceNotFoundException;
 import com.example.resource_service.model.*;
 import com.example.resource_service.repo.ResourceRepo;
+import org.apache.tika.metadata.Metadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -27,24 +25,16 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public UploadResourceResponseDto uploadResource(MultipartFile file) {
+    public UploadResourceResponseDto uploadResource(byte[] audioData) {
+        fileProcessor.validateDatatype(audioData);
+        handleMetadata(audioData);
 
-//        fileProcessor.validateFile(file);
+        ResourceModel resourceModel = ResourceModel.builder()
+                .mp3File(audioData)
+                .build();
 
-        try {
-            byte[] bytes = file.getInputStream().readAllBytes();
-            handleMetadata(file);
-
-            ResourceModel resourceModel = ResourceModel.builder()
-                    .mp3File(bytes)
-                    .build();
-
-            ResourceModel savedResourceModel = resourceRepo.save(resourceModel);
-            return new UploadResourceResponseDto(savedResourceModel.getId());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ResourceModel savedResourceModel = resourceRepo.save(resourceModel);
+        return new UploadResourceResponseDto(savedResourceModel.getId());
     }
 
     @Override
@@ -70,8 +60,8 @@ public class ResourceServiceImpl implements ResourceService {
         }
     }
 
-    private void handleMetadata(MultipartFile file) {
-        Map<String, String> metadata = fileProcessor.extractMetadata(file);
+    private void handleMetadata(byte[] file) {
+        Metadata metadata = fileProcessor.extractMetadata(file);
         songServiceClient.saveSongMetadata(new CreateSongRequestDto(metadata));
     }
 }

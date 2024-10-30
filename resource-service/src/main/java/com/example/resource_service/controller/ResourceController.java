@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/resources")
@@ -25,11 +24,11 @@ public class ResourceController {
     }
 
 
-    @PostMapping
+    @PostMapping(consumes = "audio/mpeg")
     public ResponseEntity<UploadResourceResponseDto> uploadResource(
-            @RequestParam("file") MultipartFile file
+            @RequestBody byte[] audioData
     ) {
-        UploadResourceResponseDto responseDto = resourceService.uploadResource(file);
+        UploadResourceResponseDto responseDto = resourceService.uploadResource(audioData);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

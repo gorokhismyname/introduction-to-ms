@@ -1,12 +1,13 @@
 package com.example.resource_service.service;
 
-import com.example.resource_service.exception.MultipartFileProcessingException;
+import com.example.resource_service.exception.FileProcessingException;
 import com.example.resource_service.model.CreateSongResponseDto;
 import com.example.resource_service.model.ResourceModel;
 import com.example.resource_service.model.UploadResourceResponseDto;
 import com.example.resource_service.repo.ResourceRepo;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.apache.tika.metadata.Metadata;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,13 +43,12 @@ class ResourceServiceUploadTest {
         //Given
         int id = 12;
         byte[] content = {123, 123, 123};
-        MultipartFile file = new MockMultipartFile("test", content);
 
         //When
         when(resourceRepo.save(any())).thenReturn(ResourceModel.builder().mp3File(content).id(id).build());
-        when(fileProcessor.extractMetadata(file)).thenReturn(Map.of());
+        when(fileProcessor.extractMetadata(content)).thenReturn(new Metadata());
         when(songServiceClient.saveSongMetadata(any())).thenReturn(ResponseEntity.ok(new CreateSongResponseDto(1)));
-        UploadResourceResponseDto uploadResourceResponseDto = resourceService.uploadResource(file);
+        UploadResourceResponseDto uploadResourceResponseDto = resourceService.uploadResource(content);
 
         //Then
         assertEquals(uploadResourceResponseDto.id(), id);
@@ -59,13 +59,12 @@ class ResourceServiceUploadTest {
         //Given
         int id = 12;
         byte[] content = {123, 123, 123};
-        MultipartFile file = new MockMultipartFile("test", content);
 
         //When
-        doNothing().when(fileProcessor).validateFile(file);
+        doNothing().when(fileProcessor).validateDatatype(content);
         when(resourceRepo.save(any())).thenReturn(ResourceModel.builder().mp3File(content).id(id).build());
-        when(fileProcessor.extractMetadata(file)).thenReturn(Map.of());
-        resourceService.uploadResource(file);
+        when(fileProcessor.extractMetadata(content)).thenReturn(new Metadata());
+        resourceService.uploadResource(content);
 
         //Then
         verify(songServiceClient, times(1)).saveSongMetadata(any());
@@ -75,12 +74,11 @@ class ResourceServiceUploadTest {
     void shouldThrowValidationExceptionWhenInvalidMp3() {
         //Given
         byte[] content = {123, 123, 123};
-        MultipartFile file = new MockMultipartFile("test", content);
 
         //When
-        doThrow(new MultipartFileProcessingException()).when(fileProcessor).validateFile(file);
+        doThrow(new FileProcessingException("test")).when(fileProcessor).validateDatatype(content);
 
         //Then
-        assertThrows(MultipartFileProcessingException.class, () -> resourceService.uploadResource(file));
+        assertThrows(FileProcessingException.class, () -> resourceService.uploadResource(content));
     }
 }

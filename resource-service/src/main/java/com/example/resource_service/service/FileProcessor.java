@@ -1,10 +1,8 @@
 package com.example.resource_service.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
+import org.apache.tika.metadata.Metadata;
 
 public interface FileProcessor {
-    void validateFile(MultipartFile file);
-    Map<String, String> extractMetadata(MultipartFile file);
+    void validateDatatype(byte[] file);
+    Metadata extractMetadata(byte[] file);
 }

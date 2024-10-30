@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MultipartFileProcessingException.class)
-    public ResponseEntity<String> handleMaxSizeException(MultipartFileProcessingException ex) {
+    @ExceptionHandler(FileProcessingException.class)
+    public ResponseEntity<String> handleMaxSizeException(FileProcessingException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed or request body is invalid MP3");
     }
 
