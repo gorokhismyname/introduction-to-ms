@@ -27,13 +27,12 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public UploadResourceResponseDto uploadResource(byte[] audioData) {
         fileProcessor.validateDatatype(audioData);
-        handleMetadata(audioData);
-
         ResourceModel resourceModel = ResourceModel.builder()
                 .mp3File(audioData)
                 .build();
 
         ResourceModel savedResourceModel = resourceRepo.save(resourceModel);
+        handleMetadata(savedResourceModel.getId(), audioData);
         return new UploadResourceResponseDto(savedResourceModel.getId());
     }
 
@@ -60,8 +59,8 @@ public class ResourceServiceImpl implements ResourceService {
         }
     }
 
-    private void handleMetadata(byte[] file) {
+    private void handleMetadata(Integer id, byte[] file) {
         Metadata metadata = fileProcessor.extractMetadata(file);
-        songServiceClient.saveSongMetadata(new CreateSongRequestDto(metadata));
+        songServiceClient.saveSongMetadata(new CreateSongRequestDto(id, metadata));
     }
 }

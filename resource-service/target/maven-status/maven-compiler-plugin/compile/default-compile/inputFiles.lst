@@ -1,7 +1,7 @@
 C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\controller\ResourceController.java
 C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\exception\AudioResourceNotFoundException.java
+C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\exception\FileProcessingException.java
 C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\exception\GlobalExceptionHandler.java
-C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\exception\MultipartFileProcessingException.java
 C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\model\CreateSongRequestDto.java
 C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\model\CreateSongResponseDto.java
 C:\Users\igor_gorokh\IdeaProjects\intro-to-ms\resource-service\src\main\java\com\example\resource_service\model\RemoveResourceResponseDto.java
