@@ -7,6 +7,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
+import org.apache.tika.parser.mp3.Mp3Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -35,11 +36,11 @@ public class FileProcessorImpl implements FileProcessor {
         try {
             InputStream inputStream = new ByteArrayInputStream(file);
 
-            Parser parser = new AutoDetectParser();
             BodyContentHandler handler = new BodyContentHandler();
             Metadata metadata = new Metadata();
-
             ParseContext context = new ParseContext();
+
+            Mp3Parser parser = new Mp3Parser();
 
             parser.parse(inputStream, handler, metadata, context);
 
@@ -48,6 +49,5 @@ public class FileProcessorImpl implements FileProcessor {
         } catch (IOException | TikaException | SAXException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

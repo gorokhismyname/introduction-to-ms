@@ -1,7 +1,10 @@
 com\example\resource_service\exception\GlobalExceptionHandler.class
 com\example\resource_service\model\CreateSongRequestDto.class
 com\example\resource_service\repo\ResourceRepo.class
+com\example\resource_service\service\ResourceServiceImpl.class
 com\example\resource_service\service\FileProcessorImpl.class
+com\example\resource_service\service\SongServiceClient.class
+com\example\resource_service\exception\InvalidCSVFormatException.class
 com\example\resource_service\service\ResourceService.class
 com\example\resource_service\model\ResourceModel.class
 com\example\resource_service\exception\AudioResourceNotFoundException.class
@@ -11,5 +14,6 @@ com\example\resource_service\model\ResourceBinaryDataResponseDto.class
 com\example\resource_service\model\ResourceModel$ResourceModelBuilder.class
 com\example\resource_service\model\CreateSongResponseDto.class
 com\example\resource_service\model\UploadResourceResponseDto.class
+com\example\resource_service\exception\FileProcessingException.class
 com\example\resource_service\controller\ResourceController.class
 com\example\resource_service\service\FileProcessor.class

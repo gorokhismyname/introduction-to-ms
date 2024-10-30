@@ -4,6 +4,8 @@ import com.example.resource_service.model.RemoveResourceResponseDto;
 import com.example.resource_service.model.ResourceBinaryDataResponseDto;
 import com.example.resource_service.model.UploadResourceResponseDto;
 import com.example.resource_service.service.ResourceService;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,7 @@ public class ResourceController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<ResourceBinaryDataResponseDto> getResourceBinaryData(
-            @PathVariable Integer id
+            @PathVariable @Positive Integer id
     ) {
         ResourceBinaryDataResponseDto responseDto = resourceService.getResourceBinaryData(id);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

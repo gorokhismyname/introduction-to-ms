@@ -1,9 +1,8 @@
 package com.example.resource_service.model;
 
-import org.apache.tika.metadata.Metadata;
+import java.util.Map;
 
 public record CreateSongRequestDto(
-        int resourceId,
-        Metadata metadata
+        Map<String, String> metadataMap
 ) {
 }

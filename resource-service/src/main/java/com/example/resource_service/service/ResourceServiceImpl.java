@@ -1,6 +1,7 @@
 package com.example.resource_service.service;
 
 import com.example.resource_service.exception.AudioResourceNotFoundException;
+import com.example.resource_service.exception.InvalidCSVFormatException;
 import com.example.resource_service.model.*;
 import com.example.resource_service.repo.ResourceRepo;
 import org.apache.tika.metadata.Metadata;
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -55,12 +58,23 @@ public class ResourceServiceImpl implements ResourceService {
             return new RemoveResourceResponseDto(idList);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new InvalidCSVFormatException(e.getMessage());
         }
     }
 
     private void handleMetadata(Integer id, byte[] file) {
         Metadata metadata = fileProcessor.extractMetadata(file);
-        songServiceClient.saveSongMetadata(new CreateSongRequestDto(id, metadata));
+        metadata.add("resourceId", String.valueOf(id));
+        Map<String, String> metadataMap = metadataToMap(metadata);
+        songServiceClient.saveSongMetadata(new CreateSongRequestDto(metadataMap));
     }
+
+    private Map<String, String> metadataToMap(Metadata metadata) {
+        Map<String, String> metadataMap = new HashMap<>();
+        for (String name : metadata.names()) {
+            metadataMap.put(name, metadata.get(name));
+        }
+        return metadataMap;
+    }
+
 }
