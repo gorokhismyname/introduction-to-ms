@@ -1,61 +1,44 @@
 package com.example.song_service.service;
 
-import com.example.song_service.exception.MetadataFieldValidationException;
+import com.example.song_service.exception.InvalidCSVFormatException;
 import com.example.song_service.exception.SongMetadataNotFoundException;
 import com.example.song_service.model.*;
 import com.example.song_service.repo.SongRepo;
+import org.apache.tika.metadata.Metadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class SongServiceImpl implements SongService {
 
     private final SongRepo songRepo;
+    private final SongMapper songMapper;
 
     @Autowired
-    public SongServiceImpl(SongRepo songRepo) {
+    public SongServiceImpl(SongRepo songRepo, SongMapper songMapper) {
         this.songRepo = songRepo;
+        this.songMapper = songMapper;
     }
 
     @Override
     public CreateSongResponseDto saveSongMetadata(CreateSongRequestDto requestDto) {
-
-        Map<String, String> metadata = requestDto.metadata();
-
-        validateMetadata(metadata);
-
-        SongModel songModel = SongModel.builder()
-                .name(metadata.get(MetadataField.NAME.label))
-                .album(metadata.get(MetadataField.ALBUM.label))
-                .artist(metadata.get(MetadataField.ARTIST.label))
-                .year(metadata.get(MetadataField.YEAR.label))
-                .length(metadata.get(MetadataField.LENGTH.label))
-                .resourceId(metadata.get(MetadataField.RESOURCE_ID.label))
-                .build();
-
-        SongModel savedSong = songRepo.save(songModel);
+        Map<String, String> metadataMap = requestDto.metadataMap();
+        Metadata metadata = mapToMetadata(metadataMap);
+        SongModel model = songMapper.toModel(metadata);
+        SongModel savedSong = songRepo.save(model);
         return new CreateSongResponseDto(savedSong.getId());
     }
 
-
     @Override
     public SongMetadataResponseDto getSongMetadata(Integer id) {
-
         SongModel songModel = songRepo.findById(id)
                 .orElseThrow(() -> new SongMetadataNotFoundException(id));
-
-        Map<String, String> metadataMap= new HashMap<>();
-
-        Arrays.stream(MetadataField.values())
-                .forEach(field -> {
-                    String fieldValueByName = FieldValueFetcher.getFieldValueByName(field.label, songModel);
-                    metadataMap.put(field.label, fieldValueByName);
-                });
-
-        return new SongMetadataResponseDto(metadataMap);
-        }
+        return songMapper.toDto(songModel);
+    }
 
     @Override
     public RemoveSongMetadataResponseDto removeSongMetadata(String id) {
@@ -67,14 +50,15 @@ public class SongServiceImpl implements SongService {
             return new RemoveSongMetadataResponseDto(idList);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new InvalidCSVFormatException(e.getMessage());
         }
     }
 
-    private void validateMetadata(Map<String, String> metadata) {
-        Optional<MetadataField> missingField = Arrays.stream(MetadataField.values())
-                .filter(field -> !metadata.containsKey(field.label))
-                .findFirst();
-        if (missingField.isPresent()) throw new MetadataFieldValidationException(missingField.get().label);
+    private Metadata mapToMetadata(Map<String, String> metadataMap) {
+        Metadata metadata = new Metadata();
+        for (Map.Entry<String, String> entry : metadataMap.entrySet()) {
+            metadata.set(entry.getKey(), entry.getValue());
+        }
+        return metadata;
     }
 }

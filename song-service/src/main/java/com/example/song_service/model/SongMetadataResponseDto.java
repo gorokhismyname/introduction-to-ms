@@ -1,8 +1,13 @@
 package com.example.song_service.model;
 
-import java.util.Map;
 
 public record SongMetadataResponseDto(
-        Map<String, String> metadata
+        Integer id,
+        String artist,
+        String album,
+        String duration,
+        int resourceId,
+        String year,
+        String title
 ) {
 }

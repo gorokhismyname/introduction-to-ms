@@ -1,6 +1,4 @@
 com\example\song_service\model\SongModel.class
-com\example\song_service\exception\MetadataFieldValidationException.class
-com\example\song_service\model\MetadataField.class
 com\example\song_service\service\SongServiceImpl.class
 com\example\song_service\controller\SongController.class
 com\example\song_service\exception\SongMetadataNotFoundException.class
@@ -8,9 +6,9 @@ com\example\song_service\model\SongModel$SongModelBuilder.class
 com\example\song_service\exception\GlobalExceptionHandler.class
 com\example\song_service\service\SongService.class
 com\example\song_service\model\SongMetadataResponseDto.class
-com\example\song_service\service\FieldValueFetcher.class
 com\example\song_service\repo\SongRepo.class
 com\example\song_service\model\CreateSongRequestDto.class
 com\example\song_service\model\RemoveSongMetadataResponseDto.class
+com\example\song_service\service\SongMapper.class
 com\example\song_service\SongServiceApplication.class
 com\example\song_service\model\CreateSongResponseDto.class

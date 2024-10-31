@@ -48,6 +48,4 @@ public class SongController {
         RemoveSongMetadataResponseDto responseDto = songService.removeSongMetadata(id);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
-
-
 }

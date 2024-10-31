@@ -27,6 +27,8 @@ class SongServiceImplGetTest {
 
     @Mock
     SongRepo songRepo;
+    @Mock
+    SongMapper songMapper;
 
     @InjectMocks
     SongServiceImpl songService;
@@ -36,31 +38,35 @@ class SongServiceImplGetTest {
         //Given
         int id = 12;
 
-        Map<String, String> metadataMap = new HashMap<>();
-        metadataMap.put("name", "We are the champions");
-        metadataMap.put("artist", "Queen");
-        metadataMap.put("album", "News of the world");
-        metadataMap.put("length", "2:59");
-        metadataMap.put("resourceId", "123");
-        metadataMap.put("year", "1977");
-
         SongModel songModel = SongModel.builder()
-                .id(id)
-                .name(metadataMap.get("name"))
-                .artist(metadataMap.get("artist"))
-                .album(metadataMap.get("album"))
-                .length(metadataMap.get("length"))
-                .resourceId(metadataMap.get("resourceId"))
-                .year(metadataMap.get("year"))
+                .id(1)
+                .name("Imagine")
+                .artist("John Lennon")
+                .album("Imagine")
+                .duration("3:01")
+                .resourceId(101)
+                .year("1971")
+                .title("Imagine")
                 .build();
 
+        SongMetadataResponseDto expectedSongDto = new SongMetadataResponseDto(
+                1,
+                "Imagine",
+                "John Lennon",
+                "Imagine",
+                "3:01",
+                101,
+                "1971",
+                "Imagine"
+        );
 
         //When
         when(songRepo.findById(any())).thenReturn(Optional.of(songModel));
-        SongMetadataResponseDto responseDto = songService.getSongMetadata(id);
+        when(songMapper.toDto(any())).thenReturn(expectedSongDto);
+        SongMetadataResponseDto actualResponseDto = songService.getSongMetadata(id);
 
         //Then
-        assertEquals(metadataMap, responseDto.metadata());
+        assertEquals(expectedSongDto, actualResponseDto);
     }
 
     @Test
