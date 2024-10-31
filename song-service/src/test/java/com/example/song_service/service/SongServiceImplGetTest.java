@@ -12,8 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +38,6 @@ class SongServiceImplGetTest {
 
         SongModel songModel = SongModel.builder()
                 .id(1)
-                .name("Imagine")
                 .artist("John Lennon")
                 .album("Imagine")
                 .duration("3:01")
@@ -51,7 +48,6 @@ class SongServiceImplGetTest {
 
         SongMetadataResponseDto expectedSongDto = new SongMetadataResponseDto(
                 1,
-                "Imagine",
                 "John Lennon",
                 "Imagine",
                 "3:01",

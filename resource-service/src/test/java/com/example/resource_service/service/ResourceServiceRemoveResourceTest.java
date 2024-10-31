@@ -1,5 +1,6 @@
 package com.example.resource_service.service;
 
+import com.example.resource_service.exception.InvalidCSVFormatException;
 import com.example.resource_service.model.RemoveResourceResponseDto;
 import com.example.resource_service.repo.ResourceRepo;
 import lombok.AccessLevel;
@@ -42,7 +43,7 @@ class ResourceServiceRemoveResourceTest {
     }
 
     @Test
-    void shouldThrowRuntimeExceptionWhenCalledWithIllegalArgument() {
+    void shouldThrowInvalidCSVFormatExceptionWhenCalledWithIllegalArgument() {
         //Given
         String id = "12/13";
         List<Integer> idList = List.of(12, 13);
@@ -51,6 +52,6 @@ class ResourceServiceRemoveResourceTest {
         Mockito.lenient().doNothing().when(resourceRepo).deleteAllById(idList);
 
         //Then
-        assertThrows(RuntimeException.class, () -> resourceService.removeResource(id));
+        assertThrows(InvalidCSVFormatException.class, () -> resourceService.removeResource(id));
     }
 }

@@ -36,7 +36,6 @@ class SongServiceImplSaveTest {
     @Test
     void shouldReturnCorrectIdWhenCalled() {
         //Given
-        int resourceId = 12;
         int songId = 13;
 
         SongModel songModel = SongModel.builder().id(songId).build();
@@ -53,7 +52,6 @@ class SongServiceImplSaveTest {
     @Test
     void shouldThrowValidationExceptionWhenMetadataIsNotValid() {
         //Given
-        int resourceId = 12;
         CreateSongRequestDto createSongRequestDto = new CreateSongRequestDto(Map.of());
 
         //When
@@ -61,7 +59,6 @@ class SongServiceImplSaveTest {
         Mockito.lenient().when(songRepo.save(any())).thenThrow(new ConstraintViolationException("test", Set.of()));
 
         //Then
-        assertThrows(InvalidMetadataException.class, () -> songService.saveSongMetadata(createSongRequestDto));
-
+        assertThrows(ConstraintViolationException.class, () -> songService.saveSongMetadata(createSongRequestDto));
     }
 }

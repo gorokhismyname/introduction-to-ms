@@ -56,7 +56,6 @@ public class ResourceServiceImpl implements ResourceService {
                     .toList();
             resourceRepo.deleteAllById(idList);
             return new RemoveResourceResponseDto(idList);
-
         } catch (Exception e) {
             throw new InvalidCSVFormatException(e.getMessage());
         }

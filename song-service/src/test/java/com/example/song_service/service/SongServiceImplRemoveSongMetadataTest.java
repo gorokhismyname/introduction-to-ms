@@ -1,5 +1,6 @@
 package com.example.song_service.service;
 
+import com.example.song_service.exception.InvalidCSVFormatException;
 import com.example.song_service.model.RemoveSongMetadataResponseDto;
 import com.example.song_service.repo.SongRepo;
 import lombok.AccessLevel;
@@ -42,7 +43,7 @@ class SongServiceImplRemoveSongMetadataTest {
     }
 
     @Test
-    void shouldThrowRuntimeExceptionWhenCalledWithIllegalArgument() {
+    void shouldThrowInvalidCSVFormatExceptionWhenCalledWithIllegalArgument() {
         //Given
         String id = "12/13";
         List<Integer> idList = List.of(12, 13);
@@ -51,6 +52,6 @@ class SongServiceImplRemoveSongMetadataTest {
         Mockito.lenient().doNothing().when(songRepo).deleteAllById(idList);
 
         //Then
-        assertThrows(RuntimeException.class, () -> songService.removeSongMetadata(id));
+        assertThrows(InvalidCSVFormatException.class, () -> songService.removeSongMetadata(id));
     }
 }
