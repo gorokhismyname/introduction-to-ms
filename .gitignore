@@ -1,0 +1,17 @@
+/.idea/.gitignore
+/resource-service/.idea/.gitignore
+/song-service/.idea/.gitignore
+/resource-service/.idea/compiler.xml
+/song-service/.idea/compiler.xml
+/resource-service/.idea/encodings.xml
+/song-service/.idea/encodings.xml
+/resource-service/.idea/jarRepositories.xml
+/song-service/.idea/jarRepositories.xml
+/resource-service/.idea/misc.xml
+/song-service/.idea/misc.xml
+/resource-service/.idea/uiDesigner.xml
+/song-service/.idea/uiDesigner.xml
+/resource-service/.idea/vcs.xml
+/song-service/.idea/vcs.xml
+/resource-service/target/
+/song-service/target/
