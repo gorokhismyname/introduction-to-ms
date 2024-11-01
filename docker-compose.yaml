@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  resource-postgres:
+    image: postgres:17-alpine
+    container_name: resource-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: resource
+    ports:
+      - "6432:5432"
+    networks:
+      - ms-nw
+
+  song-postgres:
+    image: postgres:17-alpine
+    container_name: song-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: song
+    ports:
+      - "6433:5432"
+    networks:
+      - ms-nw
+
+  resource-app:
+    build:
+      context: ./resource-service
+      dockerfile: Dockerfile
+    image: resource-service:v1
+    container_name: resource-app
+    environment:
+      DB_HOST: ${RESOURCE_DB_HOST}
+      DB_PORT: ${RESOURCE_DB_PORT}
+      DB_NAME: ${RESOURCE_DB_NAME}
+      DB_USER: ${RESOURCE_DB_USER}
+      DB_PASSWORD: ${RESOURCE_DB_PASSWORD}
+      FEIGN_NAME: ${FEIGN_NAME}
+      FEIGN_URL: ${FEIGN_URL}
+    ports:
+      - "${RESOURCE_APP_PORT}:8081"
+    depends_on:
+      - resource-postgres
+    networks:
+      - ms-nw
+
+  song-app:
+    build:
+      context: ./song-service
+      dockerfile: Dockerfile
+    image: song-service:v1
+    container_name: song-app
+    environment:
+      DB_HOST: ${SONG_DB_HOST}
+      DB_PORT: ${SONG_DB_PORT}
+      DB_NAME: ${SONG_DB_NAME}
+      DB_USER: ${SONG_DB_USER}
+      DB_PASSWORD: ${SONG_DB_PASSWORD}
+    ports:
+      - "${SONG_APP_PORT}:8082"
+    depends_on:
+      - song-postgres
+    networks:
+      - ms-nw
+
+networks:
+  ms-nw:
+    driver: bridge
