@@ -5,31 +5,34 @@ services:
     image: postgres:17-alpine
     container_name: resource-postgres
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: resource
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_RESOURCE}
     ports:
-      - "6432:5432"
+      - "${RESOURCE_DB_PORT_EXT}:5432"
     networks:
       - ms-nw
+    volumes:
+      - ./init-scripts/resource-db:/docker-entrypoint-initdb.d
 
   song-postgres:
     image: postgres:17-alpine
     container_name: song-postgres
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: song
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_SONG}
     ports:
-      - "6433:5432"
+      - "${SONG_DB_PORT_EXT}:5432"
     networks:
       - ms-nw
+    volumes:
+      - ./init-scripts/song-db:/docker-entrypoint-initdb.d
 
   resource-app:
     build:
       context: ./resource-service
       dockerfile: Dockerfile
-    image: resource-service:v1
     container_name: resource-app
     environment:
       DB_HOST: ${RESOURCE_DB_HOST}
@@ -50,7 +53,6 @@ services:
     build:
       context: ./song-service
       dockerfile: Dockerfile
-    image: song-service:v1
     container_name: song-app
     environment:
       DB_HOST: ${SONG_DB_HOST}

@@ -17,7 +17,7 @@ public class ResourceModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Lob
+    @Column(columnDefinition="bytea")
     byte[] mp3File;
 
 
