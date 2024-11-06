@@ -18,13 +18,13 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepo resourceRepo;
     private final FileProcessor fileProcessor;
-    private final SongServiceClient songServiceClient;
+    private final SongServiceRestClient songServiceRestClient;
 
     @Autowired
-    public ResourceServiceImpl(ResourceRepo resourceRepo, FileProcessor fileProcessor, SongServiceClient songServiceClient) {
+    public ResourceServiceImpl(ResourceRepo resourceRepo, FileProcessor fileProcessor, SongServiceRestClient songServiceRestClient) {
         this.resourceRepo = resourceRepo;
         this.fileProcessor = fileProcessor;
-        this.songServiceClient = songServiceClient;
+        this.songServiceRestClient = songServiceRestClient;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ResourceServiceImpl implements ResourceService {
         Metadata metadata = fileProcessor.extractMetadata(file);
         metadata.add("resourceId", String.valueOf(id));
         Map<String, String> metadataMap = metadataToMap(metadata);
-        songServiceClient.saveSongMetadata(new CreateSongRequestDto(metadataMap));
+        songServiceRestClient.saveSongMetadata(new CreateSongRequestDto(metadataMap));
     }
 
     private Map<String, String> metadataToMap(Metadata metadata) {

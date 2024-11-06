@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.*;
 class ResourceServiceUploadTest {
 
     @Mock
-    SongServiceClient songServiceClient;
+    SongServiceRestClient songServiceClient;
     @Mock
     FileProcessor fileProcessor;
     @Mock
@@ -43,7 +42,7 @@ class ResourceServiceUploadTest {
         //When
         when(resourceRepo.save(any())).thenReturn(ResourceModel.builder().mp3File(content).id(id).build());
         when(fileProcessor.extractMetadata(content)).thenReturn(new Metadata());
-        when(songServiceClient.saveSongMetadata(any())).thenReturn(ResponseEntity.ok(new CreateSongResponseDto(1)));
+        when(songServiceClient.saveSongMetadata(any())).thenReturn(new CreateSongResponseDto(1));
         UploadResourceResponseDto uploadResourceResponseDto = resourceService.uploadResource(content);
 
         //Then
