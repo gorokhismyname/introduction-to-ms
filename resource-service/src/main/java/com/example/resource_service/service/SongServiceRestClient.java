@@ -2,6 +2,7 @@ package com.example.resource_service.service;
 
 import com.example.resource_service.model.CreateSongRequestDto;
 import com.example.resource_service.model.CreateSongResponseDto;
+import com.example.resource_service.model.RemoveSongMetadataResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -30,5 +31,20 @@ public class SongServiceRestClient {
                 .body(metadataMap)
                 .retrieve()
                 .body(CreateSongResponseDto.class);
+    }
+
+    public RemoveSongMetadataResponseDto removeSongMetadata(String id) {
+        RestClient restClient = RestClient.create();
+        ServiceInstance serviceInstance = discoveryClient.getInstances(SERVICE_NAME).get(0);
+        return restClient.delete()
+                .uri(uriBuilder -> uriBuilder
+                        .scheme(serviceInstance.getUri().getScheme())
+                        .host(serviceInstance.getUri().getHost())
+                        .port(serviceInstance.getUri().getPort())
+                        .path("/songs")
+                        .queryParam("id", id) // Add the request parameter 'id'
+                        .build())
+                .retrieve()
+                .body(RemoveSongMetadataResponseDto.class);
     }
 }

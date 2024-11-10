@@ -44,6 +44,7 @@ public class SongServiceImpl implements SongService {
         try {
             List<Integer> idList = Arrays.stream(id.split(","))
                     .map(Integer::parseInt)
+                    .filter(e -> songRepo.findById(e).isPresent())
                     .toList();
             songRepo.deleteAllById(idList);
             return new RemoveSongMetadataResponseDto(idList);

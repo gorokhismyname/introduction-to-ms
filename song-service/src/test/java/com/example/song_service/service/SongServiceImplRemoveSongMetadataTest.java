@@ -2,6 +2,7 @@ package com.example.song_service.service;
 
 import com.example.song_service.exception.InvalidCSVFormatException;
 import com.example.song_service.model.RemoveSongMetadataResponseDto;
+import com.example.song_service.model.SongModel;
 import com.example.song_service.repo.SongRepo;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -13,10 +14,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +40,7 @@ class SongServiceImplRemoveSongMetadataTest {
 
         //When
         doNothing().when(songRepo).deleteAllById(idList);
+        when(songRepo.findById(anyInt())).thenReturn(Optional.of(new SongModel()));
         RemoveSongMetadataResponseDto removeSongMetadataResponseDto = songService.removeSongMetadata(id);
 
         //Then

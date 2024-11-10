@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -40,12 +41,11 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public ResourceBinaryDataResponseDto getResourceBinaryData(Integer id) {
-
+    public byte[] getResourceBinaryData(Integer id) {
         ResourceModel resourceModel = resourceRepo.findById(id)
                 .orElseThrow(() -> new AudioResourceNotFoundException(id));
 
-        return new ResourceBinaryDataResponseDto(resourceModel.getMp3File());
+        return resourceModel.getMp3File();
     }
 
     @Override
@@ -53,8 +53,15 @@ public class ResourceServiceImpl implements ResourceService {
         try {
             List<Integer> idList = Arrays.stream(id.split(","))
                     .map(Integer::parseInt)
+                    .filter(e -> resourceRepo.findById(e).isPresent())
                     .toList();
             resourceRepo.deleteAllById(idList);
+
+            String idListStringForSongRemove = idList.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+            songServiceRestClient.removeSongMetadata(idListStringForSongRemove);
+
             return new RemoveResourceResponseDto(idList);
         } catch (Exception e) {
             throw new InvalidCSVFormatException(e.getMessage());

@@ -38,10 +38,10 @@ class ResourceServiceGetResourceTest {
 
         //When
         when(resourceRepo.findById(id)).thenReturn(Optional.of(resourceModel));
-        ResourceBinaryDataResponseDto resourceBinaryData = resourceService.getResourceBinaryData(id);
+        byte[] resourceBinaryData = resourceService.getResourceBinaryData(id);
 
         //Then
-        assertEquals(responseDto.audioBytes(), resourceBinaryData.audioBytes());
+        assertEquals(responseDto.audioBytes(), audioBytes);
 
     }
 
