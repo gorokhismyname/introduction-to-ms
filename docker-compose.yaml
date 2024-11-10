@@ -38,7 +38,6 @@ services:
     build:
       context: ./resource-service
       dockerfile: Dockerfile
-    container_name: resource-app
     environment:
       DB_HOST: ${RESOURCE_DB_HOST}
       DB_PORT: ${RESOURCE_DB_PORT}
@@ -56,7 +55,6 @@ services:
     build:
       context: ./song-service
       dockerfile: Dockerfile
-    container_name: song-app
     environment:
       DB_HOST: ${SONG_DB_HOST}
       DB_PORT: ${SONG_DB_PORT}
@@ -65,7 +63,17 @@ services:
       DB_PASSWORD: ${SONG_DB_PASSWORD}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     ports:
-      - "${SONG_APP_PORT}:8082"
+      - "${SONG_APP_PORT}"
     depends_on:
       - song-postgres
       - eureka-server
+      
+  gateway:
+    image: nginx:latest
+    container_name: gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - song-app

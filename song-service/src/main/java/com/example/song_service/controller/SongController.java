@@ -1,6 +1,5 @@
 package com.example.song_service.controller;
 
-import com.example.song_service.model.CreateSongRequestDto;
 import com.example.song_service.model.CreateSongResponseDto;
 import com.example.song_service.model.RemoveSongMetadataResponseDto;
 import com.example.song_service.model.SongMetadataResponseDto;
@@ -11,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/songs")
@@ -27,9 +28,9 @@ public class SongController {
 
     @PostMapping
     public ResponseEntity<CreateSongResponseDto> saveSongMetadata(
-            @RequestBody CreateSongRequestDto requestDto
+            @RequestBody Map<String, String> metadataMap
             ) {
-        CreateSongResponseDto responseDto = songService.saveSongMetadata(requestDto);
+        CreateSongResponseDto responseDto = songService.saveSongMetadata(metadataMap);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

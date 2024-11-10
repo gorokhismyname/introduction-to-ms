@@ -8,6 +8,8 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.util.Map;
+
 @Component
 public class SongServiceRestClient {
 
@@ -21,10 +23,11 @@ public class SongServiceRestClient {
 
     public CreateSongResponseDto saveSongMetadata(CreateSongRequestDto requestDto) {
         RestClient restClient = RestClient.create();
+        Map<String, String> metadataMap = requestDto.metadataMap();
         ServiceInstance serviceInstance = discoveryClient.getInstances(SERVICE_NAME).get(0);
         return restClient.post()
                 .uri(serviceInstance.getUri() + "/songs")
-                .body(requestDto)
+                .body(metadataMap)
                 .retrieve()
                 .body(CreateSongResponseDto.class);
     }

@@ -25,6 +25,7 @@ public class SongModel {
     @NotNull
     String album;
     @NotNull
+    @Pattern(regexp = "^(?:[0-5][0-9]):[0-5][0-9]$", message = "Duration must be in the format MM:SS")
     String duration;
     @NotNull
     int resourceId;

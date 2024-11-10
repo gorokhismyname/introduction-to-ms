@@ -25,8 +25,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public CreateSongResponseDto saveSongMetadata(CreateSongRequestDto requestDto) {
-        Map<String, String> metadataMap = requestDto.metadataMap();
+    public CreateSongResponseDto saveSongMetadata(Map<String, String> metadataMap) {
         Metadata metadata = mapToMetadata(metadataMap);
         SongModel model = songMapper.toModel(metadata);
         SongModel savedSong = songRepo.save(model);
